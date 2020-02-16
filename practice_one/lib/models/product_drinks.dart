@@ -1,16 +1,19 @@
 import 'dart:math';
 import 'package:flutter/foundation.dart';
+import 'package:practice_one/models/product.dart';
+import 'package:practice_one/models/product_repository.dart';
 
 enum ProductSize { CH, M, G }
 
-class ProductDrinks {
+class ProductDrinks extends Product {
+  static const ProductType TYPE = ProductType.BEBIDAS;
   final String productTitle; // nombre del producto
   final String productDescription; // descripcion del producto
   final String productImage; // url de imagen del producto
   ProductSize productSize; // tamano del producto
   double productPrice; // precio del producto autocalculado
-  final int productAmount; // cantidad de producto por comprar
-  final bool liked;
+  int productAmount; // cantidad de producto por comprar
+  bool liked;
 
   ProductDrinks({
     @required this.productTitle,
@@ -21,25 +24,14 @@ class ProductDrinks {
     this.liked = false,
   }) {
     // inicializa el precio de acuerdo a la size del producto
-    productPrice = productPriceCalculator();
+    productPrice = _productPriceCalculator();
   }
 
-  // Mandar llamar este metodo cuando se cambie el tamanio del producto
-  // De esta manera el precio del nuevo tamanio del producto se autocalcula
-  // Por ejemplo cuando se cambie a M
-  //
-  // FlatButton(
-  //   child: Text("M"),
-  //   onPressed: () {
-  //     setState(() {
-  //       prod.productSize = ProductSize.M;
-  //       prod.productPrice = prods.productPriceCalculator();
-  //     });
-  //   },
-  // ),
-  //
-  //
-  double productPriceCalculator() {
+  void updatePrice() {
+    this.productPrice = _productPriceCalculator();
+  }
+
+  double _productPriceCalculator() {
     if (this.productSize == ProductSize.CH)
       return (20 + Random().nextInt(40)).toDouble();
     if (this.productSize == ProductSize.M)

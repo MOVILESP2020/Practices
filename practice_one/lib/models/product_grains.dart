@@ -1,17 +1,19 @@
 import 'dart:math';
-
 import 'package:flutter/foundation.dart';
+import 'package:practice_one/models/product.dart';
+import 'package:practice_one/models/product_repository.dart';
 
-enum ProductWeight { CUARTO, KILO }
+enum ProductWeight {CUARTO, KILO }
 
-class ProductGrains {
+class ProductGrains extends Product {
+  static const ProductType TYPE = ProductType.GRANO;
   final String productTitle; // nombre del producto
   final String productDescription; // descripcion del producto
   final String productImage; // url de imagen del producto
   ProductWeight productWeight; // tamano del producto
   double productPrice; // precio del producto autocalculado
-  final int productAmount; // cantidad de producto por comprar
-  final bool liked;
+  int productAmount; // cantidad de producto por comprar
+  bool liked;
 
   ProductGrains({
     @required this.productTitle,
@@ -22,10 +24,14 @@ class ProductGrains {
     this.liked = false,
   }) {
     // inicializa el precio de acuerdo al weight del producto
-    productPrice = productPriceCalculator();
+    productPrice = _productPriceCalculator();
   }
 
-  double productPriceCalculator() {
+  void updateWeight() {
+    this.productPrice = _productPriceCalculator();
+  }
+
+  double _productPriceCalculator() {
     if (this.productWeight == ProductWeight.CUARTO)
       return (20 + Random().nextInt(40)).toDouble();
     if (this.productWeight == ProductWeight.KILO)
