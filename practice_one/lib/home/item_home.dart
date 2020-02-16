@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practice_one/utils/themes.dart';
 
 class ItemHome extends StatelessWidget {
   final String title;
@@ -14,7 +15,6 @@ class ItemHome extends StatelessWidget {
     return Card(
       elevation: 4.0,
       margin: EdgeInsets.all(8.0),
-      color: Colors.grey[300],
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -22,10 +22,7 @@ class ItemHome extends StatelessWidget {
             child: Container(
               child: Text(
                 "$title",
-                style: Theme.of(context)
-                    .textTheme
-                    .title
-                    .copyWith(fontWeight: FontWeight.bold),
+                style: ThemeUtil.categoryTitleTheme(),
                 textAlign: TextAlign.center,
               ),
             ),
