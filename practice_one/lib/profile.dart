@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:practice_one/cart/cart.dart';
+import 'package:practice_one/navigation/navigation.dart';
 import 'package:practice_one/utils/constants.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key key}) : super(key: key);
+
+  _openLogin(BuildContext context) {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => Navigation()),
+            (Route<dynamic> route) => false
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +21,11 @@ class Profile extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => Cart()),
+              );
+            },
           ),
         ],
       ),
@@ -80,7 +93,7 @@ class Profile extends StatelessWidget {
                   Expanded(
                     child: RaisedButton(
                       child: Text(PROFILE_LOGOUT),
-                      onPressed: () {},
+                      onPressed: () => _openLogin(context),
                     ),
                   ),
                 ],
