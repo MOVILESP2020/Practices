@@ -10,4 +10,9 @@ class Apunte {
     @required this.descripcion,
     @required this.imageUrl,
   });
+
+  @override
+  String toString() {
+    return "Materia: $materia, Descripción: $descripcion, Image: $imageUrl";
+  }
 }

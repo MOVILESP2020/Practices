@@ -123,6 +123,7 @@ class _ContactState extends State<Contact> {
           icon: Icon(Icons.camera),
           label: Text('Add Image'),
           onPressed: _openImagePicker,
+          heroTag: UniqueKey(),
         ),
       );
   }
