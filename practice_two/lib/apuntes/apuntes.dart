@@ -73,6 +73,7 @@ class _ApuntesState extends State<Apuntes> {
                     content: Text("Se ha guardado el elemento."),
                   ),
                 );
+                bloc.add(GetDataEvent());
             } else if (state is CloudStoreGetData) {
               Scaffold.of(context)
                 ..hideCurrentSnackBar()
