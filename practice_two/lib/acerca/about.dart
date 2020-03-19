@@ -7,7 +7,7 @@ class About extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Contacto"),
+        title: Text("About"),
       ),
       body: Container(),
     );
