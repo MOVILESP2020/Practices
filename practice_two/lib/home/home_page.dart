@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:practica_dos/acerca/about.dart';
 import 'package:practica_dos/apuntes/apuntes.dart';
-import 'package:practica_dos/contact/contact.dart';
 import 'package:practica_dos/recordatorios/reminder.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +11,6 @@ class HomePage extends StatefulWidget {
   final _pages = [
     ReminderPage(),
     Apuntes(),
-    Contact(),
     About(),
   ];
 
@@ -48,10 +46,6 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.import_contacts),
             title: Text("Apuntes"),
-          ),
-                    BottomNavigationBarItem(
-            icon: Icon(Icons.contact_mail),
-            title: Text("Contacto"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.info),
