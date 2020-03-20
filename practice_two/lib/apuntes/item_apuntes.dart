@@ -29,6 +29,42 @@ class _ItemApuntesState extends State<ItemApuntes> {
     );
   }
 
+void _deleteItem() {
+  BlocProvider.of<ApuntesBloc>(context).add(
+    RemoveDataEvent(index: widget.index),
+  );
+}
+
+ void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Eliminar"),
+          content: new Text("Está seguro que sea eliminar el elemento."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Cancelar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Aceptar"),
+              onPressed: () {
+                _deleteItem();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -47,9 +83,7 @@ class _ItemApuntesState extends State<ItemApuntes> {
               IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  BlocProvider.of<ApuntesBloc>(context).add(
-                    RemoveDataEvent(index: widget.index),
-                  );
+                  _showDialog();
                 },
               )
             ],
