@@ -21,12 +21,76 @@ class _AddApunteState extends State<AddApunte> {
   bool _isLoading = false;
   TextEditingController _materiaController = TextEditingController();
   TextEditingController _descripcionController = TextEditingController();
+  ApuntesBloc bloc;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Agregar apunte")),
-      body: Padding(
+      body: BlocProvider(
+        create: (context) {
+          bloc = ApuntesBloc()..add(GetDataEvent());
+          return bloc;
+        },
+        child: BlocListener<ApuntesBloc, ApuntesState>(
+          listener: (context, state) {
+            if (state is ChosenImageFailed) {
+              Scaffold.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text("No se puedo cargar la imagen."),
+                  ),
+                );            
+            }
+            if (state is FileUploadFailed) {
+              Scaffold.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text("No se puedo subir la imagen al bucket."),
+                  ),
+                );            
+            }
+          },
+          child: BlocBuilder<ApuntesBloc, ApuntesState>(
+            builder: (context, state) {
+              if (state is ApuntesInitial) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is ChosenImageLoaded) {
+                _choosenImage = state.imgPath;
+              }
+              if (state is FileUploaded) {
+                _url = state.fileUrl;
+                _saveData();
+              }
+              return generateAddApuntePage();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _saveData() {
+    BlocProvider.of<ApuntesBloc>(context).add(
+      SaveDataEvent(
+        materia: _materiaController.text,
+        descripcion: _descripcionController.text,
+        imageUrl: _url,
+      ),
+    );
+    _isLoading = false;
+    Future.delayed(Duration(milliseconds: 1500)).then((_) {
+      Navigator.of(context).pop();
+    });
+  }
+
+  Widget generateAddApuntePage() {
+    return Padding(
         padding: const EdgeInsets.all(12.0),
         child: SingleChildScrollView(
           child: Stack(
@@ -52,7 +116,9 @@ class _AddApunteState extends State<AddApunte> {
                   SizedBox(height: 48),
                   IconButton(
                     icon: Icon(Icons.image),
-                    onPressed: _chooseImage,
+                    onPressed: () {
+                      bloc.add(ChooseImageEvent());
+                    },
                   ),
                   SizedBox(height: 48),
                   TextField(
@@ -81,8 +147,11 @@ class _AddApunteState extends State<AddApunte> {
                       Expanded(
                         child: RaisedButton(
                           child: Text("Guardar"),
-                          onPressed: () async {
-                            await _uploadFile();
+                          onPressed: () {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            bloc.add(UploadFileEvent(file: _choosenImage));                
                           },
                         ),
                       )
@@ -94,58 +163,7 @@ class _AddApunteState extends State<AddApunte> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
-  void _saveData() {
-    BlocProvider.of<ApuntesBloc>(context).add(
-      SaveDataEvent(
-        materia: _materiaController.text,
-        descripcion: _descripcionController.text,
-        imageUrl: _url,
-      ),
-    );
-    setState(() {
-      _isLoading = false;
-    });
-    Future.delayed(Duration(milliseconds: 1500)).then((_) {
-      Navigator.of(context).pop();
-    });
-  }
-
-  Future _chooseImage() async {
-    await ImagePicker.pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 720,
-      maxWidth: 720,
-    ).then((image) {
-      setState(() {
-        _choosenImage = image;
-      });
-    });
-  }
-
-  Future _uploadFile() async {
-    setState(() {
-      _isLoading = true;
-    });
-    String filePath = _choosenImage.path;
-    StorageReference reference = FirebaseStorage.instance
-        .ref()
-        .child("apuntes/${Path.basename(filePath)}");
-    StorageUploadTask uploadTask = reference.putFile(_choosenImage);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-    taskSnapshot.ref.getDownloadURL().then((imageUrl) {
-      print("Link>>>>> $imageUrl");
-    });
-
-    reference.getDownloadURL().then((fileURL) {
-      print("$fileURL");
-      setState(() {
-        _url = fileURL;
-        _saveData();
-      });
-    });
-  }
 }

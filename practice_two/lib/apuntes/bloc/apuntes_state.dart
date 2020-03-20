@@ -31,3 +31,27 @@ class CloudStoreGetData extends ApuntesState {
   @override
   List<Object> get props => [];
 }
+
+class ChosenImageLoaded extends ApuntesState {
+  final File imgPath;
+  ChosenImageLoaded({@required this.imgPath});
+  @override
+  List<Object> get props => [imgPath];
+}
+
+class ChosenImageFailed extends ApuntesState {
+  @override
+  List<Object> get props => [];
+}
+
+class FileUploaded extends ApuntesState {
+  final dynamic fileUrl;
+  FileUploaded({@required this.fileUrl});
+  @override
+  List<Object> get props => [fileUrl];
+}
+
+class FileUploadFailed extends ApuntesState {
+  @override
+  List<Object> get props => [];
+}

@@ -33,3 +33,15 @@ class SaveDataEvent extends ApuntesEvent {
   @override
   List<Object> get props => [materia, descripcion, imageUrl];
 }
+
+class ChooseImageEvent extends ApuntesEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class UploadFileEvent extends ApuntesEvent {
+  final File file;
+  UploadFileEvent({@required this.file});
+  @override
+  List<Object> get props => [file];
+}
