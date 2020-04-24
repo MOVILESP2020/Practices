@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:practica_tres/home/home.dart';
 import 'package:practica_tres/home/new_picture.dart';
+import 'package:practica_tres/utils/constants.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
-                    return NewPicture();
+                    return NewPicture(type: BARCODE,);
                   },
                 ),
               );
@@ -66,7 +66,15 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
             ),
             backgroundColor: Colors.green,
-            onTap: () => print('SECOND CHILD'),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return NewPicture(type: LABELING,);
+                  },
+                ),
+              );  
+            },
             label: "Labeling",
             labelBackgroundColor: Colors.green,
           ),

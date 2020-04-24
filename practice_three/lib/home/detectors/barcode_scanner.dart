@@ -11,13 +11,8 @@ class BarcodeScanner extends StatefulWidget {
   _BarcodeScannerState createState() => _BarcodeScannerState();
 }
 
-class _BarcodeScannerState extends State<BarcodeScanner>
-    with AutomaticKeepAliveClientMixin<BarcodeScanner> {
+class _BarcodeScannerState extends State<BarcodeScanner>{
   ApplicationBloc _appBloc;
-  bool _showShimmer = true;
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -27,22 +22,15 @@ class _BarcodeScannerState extends State<BarcodeScanner>
 
   @override
   void dispose() {
-    _appBloc.close();
+    // _appBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return BlocListener<ApplicationBloc, ApplicationState>(
       listener: (context, state) {
-        if (state is LoadingState) {
-          // shimmer
-          _showShimmer = true;
-        } else if (state is FakeDataFetchedState) {
-          // shimmer
-          _showShimmer = false;
-        } else if (state is ErrorState) {
+      if (state is ErrorState) {
           // snackbar
           Scaffold.of(context)
             ..hideCurrentSnackBar()
@@ -56,14 +44,23 @@ class _BarcodeScannerState extends State<BarcodeScanner>
       },
       child: BlocBuilder<ApplicationBloc, ApplicationState>(
         builder: (context, state) {
+          print(state);
+          if (state is LoadingState) {
+            print('Barcodes Loading State');
+            return ListView.builder(
+              itemCount: 10,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTileShimmer();
+              }
+            );
+          }
+          print("Barcodes" + _appBloc.getBarcodeItemsList.toString());
           int _listSize = _appBloc.getBarcodeItemsList.length;
-          return _listSize > 0 || _showShimmer
-              ? ListView.builder(
-                  itemCount: _showShimmer ? 10 : _listSize,
+          return _listSize > 0 ?
+                ListView.builder(
+                  itemCount: _listSize,
                   itemBuilder: (BuildContext context, int index) {
-                    return _showShimmer
-                        ? ListTileShimmer()
-                        : ListTile(
+                    return ListTile(
                             leading: CircleAvatar(
                               child: Icon(Icons.code),
                               backgroundColor: Colors.amber[50],
@@ -72,7 +69,6 @@ class _BarcodeScannerState extends State<BarcodeScanner>
                               "$index - Codigo ${_appBloc.getBarcodeItemsList[index].tipoCodigo}",
                             ),
                             onTap: () {
-                              // TODO: mostrar detalle
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) {
